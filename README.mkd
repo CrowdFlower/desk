@@ -2,27 +2,9 @@ The Desk Ruby Gem
 ====================
 A Ruby wrapper for the [Desk.com API](http://dev.desk.com/)
 
-Installation
-------------
-    gem install desk
-
-What's new in 0.3.3?
-------------------
-@mtchavez bumped faraday_middleware to 0.9.0
-
-What's new in 0.3.2?
-------------------
-@tstachl added support for groups and max requests
-
-What's new in 0.3.0?
-------------------
-Renamed to Desk
-Newer faraday, faraday_middleware and hashie
-
-Help! I'm getting: "Did not recognize your engine specification. Please specify either a symbol or a class. (RuntimeError)"
----------------------------------------------------------------------------------------------------------------------------
-
-You'll need to explicitly require a JSON library. We recommend [yajl-ruby](http://github.com/brianmario/yajl-ruby).
+This fork uses Desk's v2 api (Desk is deprecating v1 on 2014/02/01).
+For now, only the `Case` and `Customer` apis have been updated to v2.  The
+others have *not* been updated (yet), and they will not work!
 
 Usage Examples
 --------------

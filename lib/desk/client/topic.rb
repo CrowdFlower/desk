@@ -9,7 +9,6 @@ module Desk
       #     Desk.topics
       #     Desk.topics(:count => 5)
       #     Desk.topics(:count => 5, :page => 3)
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/topics/show
       def topics(*args)
@@ -25,7 +24,6 @@ module Desk
       #   @example Return extended information for 12345
       #     Desk.topic(12345)
       #     Desk.topic(12345, :by => "external_id")
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/topics/show
       def topic(id, *args)
@@ -41,7 +39,6 @@ module Desk
       #   @example Creates a new topic
       #     Desk.create_topic("name")
       #     Desk.create_topic("name", :description => "description")
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/topics/create
       def create_topic(name, *args)
@@ -60,7 +57,6 @@ module Desk
       #   @option options [String]
       #   @example Updates information for topic 12345
       #     Desk.update_topic(12345, :subject => "New Subject")
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/topics/update
       def update_topic(id, *args)
@@ -78,7 +74,6 @@ module Desk
       #   @param id [Integer] a topic ID
       #   @example Deletes topic 12345
       #     Desk.update_topic(12345, :subject => "New Subject")
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/topics/update
       def delete_topic(id)

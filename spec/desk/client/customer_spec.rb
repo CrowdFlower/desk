@@ -1,158 +1,114 @@
-require 'helper'
+describe Desk::Client, "customers" do
+  let(:client) do
+    Desk::Client.new(:subdomain => "example", :consumer_key => 'CK', :consumer_secret => 'CS', :oauth_token => 'OT', :oauth_token_secret => 'OS')
+  end
 
-describe Desk::Client do
-  Desk::Configuration::VALID_FORMATS.each do |format|
-    context ".new(:format => '#{format}')" do
-      before do
-        @client = Desk::Client.new(:subdomain => "example", :format => format, :consumer_key => 'CK', :consumer_secret => 'CS', :oauth_token => 'OT', :oauth_token_secret => 'OS')
-      end
+  describe ".customers" do
+    let!(:request) do
+      stub_get("customers").with(
+        body: nil,
+        headers: {
+          "Accept" => "application/json"
+        }
+      ).to_return(
+        body: fixture("customers.json"),
+        headers: {
+          content_type: "application/json; charset=utf-8"
+        }
+      )
+    end
 
-      describe ".customers" do
+    it "return an array of customers" do
+      customers = client.customers
+      expect(request).to have_been_made
 
-        context "lookup" do
+      expect(customers.results).to be_an(Array)
+      expect(customers.results.first.customer.first_name).to eq("Jeremy")
+    end
+  end
 
-          before do
-            stub_get("customers.#{format}").
-              to_return(:body => fixture("customers.#{format}"), :headers => {:content_type => "application/#{format}; charset=utf-8"})
-          end
+  describe ".customer" do
+    let!(:request) do
+      stub_get("customers/1").with(
+        headers: {
+          "Accept" => "application/json"
+        }
+      ).to_return(
+        body: fixture("customer.json"),
+        headers: {
+          content_type: "application/json; charset=utf-8"
+        }
+      )
+    end
 
-          it "should get the correct resource" do
-            @client.customers
-            a_get("customers.#{format}").
-              should have_been_made
-          end
+    it "returns customer info" do
+      customer = client.customer(1)
+      expect(request).to have_been_made
 
-          it "should return up to 100 customers worth of extended information" do
-            customers = @client.customers
+      expect(customer.first_name).to eq("John")
+      expect(customer.addresses.first.value).to eq("123 Main St, San Francisco, CA 94105")
+    end
+  end
 
-            customers.results.should be_a Array
-            customers.results.first.customer.first_name.should == "Jeremy"
-          end
+  describe ".create_customer" do
+    let!(:request) do
+      stub_post("customers").with(
+        headers: {
+          "Accept" => "application/json",
+          "Content-Type" => "application/json"
+        },
+        body: MultiJson.dump(params)
+      ).to_return(
+        body: fixture("customer_create.json"),
+        headers: {
+          content_type: "application/json; charset=utf-8"
+        }
+      )
+    end
 
-        end
-      end
+    let(:params) do
+      {
+        first_name: "John",
+        last_name: "Doe"
+      }
+    end
 
-      describe ".customer" do
+    it "returns information about the customer" do
+      customer = client.create_customer(params)
+      expect(request).to have_been_made
 
-        context "lookup" do
+      expect(customer.first_name).to eq("John")
 
-          before do
-            stub_get("customers/1.#{format}").
-              to_return(:body => fixture("customer.#{format}"), :headers => {:content_type => "application/#{format}; charset=utf-8"})
-          end
+    end
+  end
 
-          it "should get the correct resource" do
-            @client.customer(1)
-            a_get("customers/1.#{format}").
-              should have_been_made
-          end
+  describe ".update_customer" do
+    let!(:request) do
+      stub_patch("customers/1").with(
+        headers: {
+          "Accept" => "application/json",
+          "Content-Type" => "application/json"
+        },
+        body: MultiJson.dump(params)
+      ).to_return(
+        body: fixture("customer_update.json"),
+        headers: {
+          :content_type => "application/json; charset=utf-8"
+        }
+      )
+    end
 
-          it "should return up to 100 customers worth of extended information" do
-            customer = @client.customer(1)
+    let(:params) do
+      {
+        first_name: "Chris",
+        last_name: "Warren"
+      }
+    end
 
-            customer.first_name.should == "Jeremy"
-            customer.addresses.first.address.city.should == "Commack"
-          end
-
-        end
-      end
-
-      describe ".create_customer" do
-
-        context "create" do
-
-          before do
-            stub_post("customers.#{format}").
-              to_return(:body => fixture("customer_create.#{format}"), :headers => {:content_type => "application/#{format}; charset=utf-8"})
-          end
-
-          it "should get the correct resource" do
-            @client.create_customer(:name => "Chris Warren", :twitter => "cdwarren")
-            a_post("customers.#{format}").
-              should have_been_made
-          end
-
-          it "should return the information about this user" do
-            customer = @client.create_customer(:name => "John Smith", :twitter => "cdwarren")
-
-            customer.first_name.should == "John"
-            customer.phones.first.phone.phone.should == "123-456-7890"
-          end
-
-        end
-      end
-
-      describe ".update_customer" do
-
-        context "update" do
-
-          before do
-            stub_put("customers/1.#{format}").
-              to_return(:body => fixture("customer_update.#{format}"), :headers => {:content_type => "application/#{format}; charset=utf-8"})
-          end
-
-          it "should get the correct resource" do
-            @client.update_customer(1, :name => "Chris Warren", :twitter => "cdwarren")
-            a_put("customers/1.#{format}").
-              should have_been_made
-          end
-
-          it "should return the information about this user" do
-            customer = @client.update_customer(1, :name => "Joslyn Esser")
-
-            customer.first_name.should == "Joslyn"
-          end
-
-        end
-      end
-
-      describe ".create_customer_email" do
-
-        context "create" do
-
-          before do
-            stub_post("customers/1/emails.#{format}").
-              to_return(:body => fixture("customer_create_email.#{format}"), :headers => {:content_type => "application/#{format}; charset=utf-8"})
-          end
-
-          it "should get the correct resource" do
-            @client.create_customer_email(1, :email => "foo@example.com")
-            a_post("customers/1/emails.#{format}").
-              should have_been_made
-          end
-
-          it "should return the information about this user" do
-            email = @client.create_customer_email(1, :email => "api@example.com")
-
-            email.email.should == "api@example.com"
-          end
-
-        end
-      end
-
-      describe ".update_customer_email" do
-
-        context "update" do
-
-          before do
-            stub_put("customers/1/emails/2.#{format}").
-              to_return(:body => fixture("customer_update_email.#{format}"), :headers => {:content_type => "application/#{format}; charset=utf-8"})
-          end
-
-          it "should get the correct resource" do
-            @client.update_customer_email(1, 2, :email => "foo@example.com")
-            a_put("customers/1/emails/2.#{format}").
-              should have_been_made
-          end
-
-          it "should return the information about this user" do
-            email = @client.update_customer_email(1, 2, :email => "api@example.com")
-
-            email.email.should == "api@example.com"
-          end
-
-        end
-      end
+    it "should return the information about this user" do
+      customer = client.update_customer(1, params)
+      expect(request).to have_been_made
+      expect(customer.first_name).to eq("Chris")
     end
   end
 end

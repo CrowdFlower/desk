@@ -10,7 +10,6 @@ module Desk
       #   @return [Hashie::Mash] The requested user.
       #   @example Return extended information for 12345
       #     Desk.user(12345)
-      # @format :json, :xml
       # @authenticated true
       # @see http://dev.desk.com/docs/api/users/show
       def user(id,*args)
@@ -21,7 +20,6 @@ module Desk
 
       # Returns extended information for up to 100 users
       #
-      # @format :json, :xml
       # @authenticated true
       # @rate_limited true
       # @return [Array] The requested users.

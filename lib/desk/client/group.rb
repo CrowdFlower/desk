@@ -9,7 +9,6 @@ module Desk
       #     Desk.groups
       #     Desk.groups(:count => 5)
       #     Desk.groups(:count => 5, :page => 3)
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/groups
       def groups(*args)
@@ -24,7 +23,6 @@ module Desk
       #   @option options [Hash]
       #   @example Return extended information for 12345
       #     Desk.group(12345)
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/groups/show
       def group(id)

@@ -16,19 +16,24 @@ module Desk
       request(:put, path, options, raw)
     end
 
+    # Perform an HTTP PATCH request
+    def patch(path, options={}, raw=false)
+      request(:patch, path, options, raw)
+    end
+
     # Perform an HTTP DELETE request
     def delete(path, options={}, raw=false)
       request(:delete, path, options, raw)
     end
 
     private
-    
+
     def before_request
       if Desk.minute != Time.now.min
         Desk.minute = Time.now.min
         Desk.counter = 0
       end
-      
+
       Desk.counter += 1
       if Desk.use_max_requests
         if Desk.counter > Desk.max_requests
@@ -43,17 +48,13 @@ module Desk
       response = connection(raw).send(method) do |request|
         case method
         when :get, :delete
-          request.url(formatted_path(path), options)
-        when :post, :put
-          request.path = formatted_path(path)
+          request.url(path, options)
+        when :post, :put, :patch
+          request.path = path
           request.body = options unless options.empty?
         end
       end
       raw ? response : response.body
-    end
-
-    def formatted_path(path)
-      [path, format].compact.join('.')
     end
   end
 end

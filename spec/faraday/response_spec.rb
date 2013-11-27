@@ -1,5 +1,3 @@
-require 'helper'
-
 describe Faraday::Response do
   before do
     @client = Desk::Client.new
@@ -19,7 +17,7 @@ describe Faraday::Response do
     context "when HTTP status is #{status}" do
 
       before do
-        stub_get('users/1.json').
+        stub_get('users/1').
           with(:headers => {'Accept'=>'application/json', 'User-Agent'=>Desk::Configuration::DEFAULT_USER_AGENT}).
           to_return(:status => status)
       end

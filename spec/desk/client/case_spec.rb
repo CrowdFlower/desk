@@ -1,99 +1,94 @@
-require 'helper'
-
 describe Desk::Client do
-  Desk::Configuration::VALID_FORMATS.each do |format|
-    context ".new(:format => '#{format}')" do
-      before do
-        @client = Desk::Client.new(:subdomain => "example", :format => format, :consumer_key => 'CK', :consumer_secret => 'CS', :oauth_token => 'OT', :oauth_token_secret => 'OS')
-      end
+  let(:client) do
+    Desk::Client.new(
+      :subdomain => "example",
+      :consumer_key => 'CK',
+      :consumer_secret => 'CS',
+      :oauth_token => 'OT',
+      :oauth_token_secret => 'OS'
+    )
+  end
 
-      describe ".cases" do
+  describe ".cases" do
+    let!(:request) do
+      stub_get("cases").with(
+        headers: {
+          "Accept" => "application/json"
+        },
+        body: nil
+      ).to_return(
+        :body => fixture("cases.json"),
+        :headers => {
+          :content_type => "application/json; charset=utf-8"
+        }
+      )
+    end
 
-        context "lookup" do
+    it "returns cases" do
+      cases = client.cases
+      expect(request).to have_been_made
+      cases.results.should be_a Array
+      cases.results.first.case.id.should == 1
+      cases.results.first.case.user.name.should == "Jeremy Suriel"
+    end
+  end
 
-          before do
-            stub_get("cases.#{format}").
-              to_return(:body => fixture("cases.#{format}"), :headers => {:content_type => "application/#{format}; charset=utf-8"})
-          end
+  describe ".case" do
+    let!(:request) do
+      stub_get("cases/1").with(
+        headers: {
+          "Accept" => "application/json"
+        },
+        body: nil
+      ).to_return(
+        :body => fixture("case.json"),
+        :headers => {:content_type => "application/json; charset=utf-8"}
+      )
+    end
 
-          it "should get the correct resource" do
-            @client.cases
-            a_get("cases.#{format}").
-              should have_been_made
-          end
+    it "parses the information correctly" do
+      kase = client.case(1)
+      expect(request).to have_been_made
+      expect(kase.subject).to eq("Welcome")
+      expect(kase.custom_fields).to eq(
+        {
+          "level" => "vip"
+        }
+      )
+    end
+  end
 
-          it "should return up to 100 cases worth of extended information" do
-            cases = @client.cases
+  describe ".update_case" do
+    let!(:request) do
+      stub_patch("cases/1").with(
+        headers: {
+          "Accept" => "application/json",
+          "Content-Type" => "application/json"
+        },
+        body: MultiJson.dump(params)
+      ).to_return(
+        :body => fixture("case_update.json"),
+        :headers => {:content_type => "application/json; charset=utf-8"}
+      )
+    end
 
-            cases.results.should be_a Array
-            cases.results.first.case.id.should == 1
-            cases.results.first.case.user.name.should == "Jeremy Suriel"
-          end
+    let(:params) do
+      {
+        subject: "Updated"
+      }
+    end
 
-        end
-      end
+    it "updates the right information" do
+      kase = client.update_case(1, params)
+      expect(request).to have_been_made
 
-      describe ".case" do
+      expect(kase.subject).to eq("Updated")
+    end
+  end
 
-        context "lookup" do
-
-          before do
-            stub_get("cases/1.#{format}").
-              to_return(:body => fixture("case.#{format}"), :headers => {:content_type => "application/#{format}; charset=utf-8"})
-          end
-
-          it "should get the correct resource" do
-            @client.case(1)
-            a_get("cases/1.#{format}").
-              should have_been_made
-          end
-
-          it "should return up to 100 cases worth of extended information" do
-            a_case = @client.case(1)
-
-            a_case.id.should == 1
-            a_case.external_id.should == "123"
-            a_case.subject.should == "Welcome to Desk.com"
-          end
-
-        end
-      end
-
-      describe ".update_case" do
-
-        context "update" do
-
-          before do
-            stub_put("cases/1.#{format}").
-              to_return(:body => fixture("case_update.#{format}"), :headers => {:content_type => "application/#{format}; charset=utf-8"})
-          end
-
-          it "should get the correct resource" do
-            @client.update_case(1, :subject => "Welcome to Desk")
-            a_put("cases/1.#{format}").
-              should have_been_made
-          end
-
-          it "should return up to 100 cases worth of extended information" do
-            a_case = @client.update_case(1, :subject => "Welcome to Desk.com")
-
-            a_case.id.should == 1
-            a_case.subject.should == "Welcome to Desk.com"
-          end
-
-        end
-      end
-
-      describe ".case_url" do
-
-        context "generating a case url" do
-
-          it "should make a correct url for the case" do
-            @client.case_url(123).should == "https://example.desk.com/agent/case/123"
-          end
-
-        end
-      end
+  describe ".case_url" do
+    it "should make a correct url for the case" do
+      client.case_url(123).should == "https://example.desk.com/agent/case/123"
     end
   end
 end

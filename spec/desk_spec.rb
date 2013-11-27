@@ -1,5 +1,3 @@
-require 'helper'
-
 describe Desk do
   after do
     Desk.reset
@@ -8,7 +6,7 @@ describe Desk do
   # context "when delegating to a client" do
   #
   #   before do
-  #     stub_get("statuses/user_timeline.json").
+  #     stub_get("statuses/user_timeline").
   #       with(:query => {:screen_name => "sferik"}).
   #       to_return(:body => fixture("statuses.json"), :headers => {:content_type => "application/json; charset=utf-8"})
   #   end
@@ -86,19 +84,6 @@ describe Desk do
     end
   end
 
-  describe ".format" do
-    it "should return the default format" do
-      Desk.format.should == Desk::Configuration::DEFAULT_FORMAT
-    end
-  end
-
-  describe ".format=" do
-    it "should set the format" do
-      Desk.format = 'xml'
-      Desk.format.should == 'xml'
-    end
-  end
-  
   describe ".max_requests" do
     it "should return the default max requests" do
       Desk.max_requests.should == Desk::Configuration::DEFAULT_MAX_REQUESTS
@@ -150,30 +135,30 @@ describe Desk do
       end
     end
   end
-  
+
   describe ".counter" do
     before do
       Desk.counter = 0
-      stub_get("cases.json").
+      stub_get("cases").
         to_return(:body => fixture("cases.json"), :headers => {:content_type => "application/json; charset=utf-8"})
     end
-    
+
     it "should be 0 in the beginning" do
       Desk.counter.should == 0
     end
-    
+
     it "should count the requests" do
       5.times {
         Desk.cases
       }
       Desk.counter.should == 5
     end
-    
+
     context "max requests enabled" do
       before do
         Desk.use_max_requests = true
       end
-      
+
       it "should only allow 60 requests" do
         expect {
           70.times {
@@ -181,7 +166,7 @@ describe Desk do
           }
         }.to raise_error
       end
-      
+
       it "should only allow defined requests" do
         Desk.max_requests = 50
         expect {
@@ -190,14 +175,14 @@ describe Desk do
           }
         }.to raise_error
       end
-      
+
       def make_request
         Desk.cases
       rescue Desk::TooManyRequests
         sleep(5)
         make_request
       end
-      
+
       xit "should allow more requests after minute has passed" do
         70.times {
           make_request
@@ -206,12 +191,12 @@ describe Desk do
       end
     end
   end
-  
+
   describe ".minute" do
     before do
       Desk.minute = Time.now.min
     end
-    
+
     it "should be the current minute" do
       Desk.minute.should == Time.now.min
     end

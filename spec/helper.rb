@@ -9,7 +9,6 @@ require 'pony'
 require 'rspec'
 require 'webmock/rspec'
 require 'email_spec'
-require 'ruby-debug'
 RSpec.configure do |config|
   config.include WebMock::API
 end
@@ -30,6 +29,10 @@ def a_put(path)
   a_request(:put, Desk.endpoint + path)
 end
 
+def a_patch(path)
+  a_request(:patch, Desk.endpoint + path)
+end
+
 def stub_delete(path)
   stub_request(:delete, Desk.endpoint + path)
 end
@@ -44,6 +47,10 @@ end
 
 def stub_put(path)
   stub_request(:put, Desk.endpoint + path)
+end
+
+def stub_patch(path)
+  stub_request(:patch, Desk.endpoint + path)
 end
 
 def fixture_path

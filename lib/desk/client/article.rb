@@ -10,7 +10,6 @@ module Desk
       #     Desk.articles
       #     Desk.articles(:count => 5)
       #     Desk.articles(:count => 5, :page => 3)
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/topics/articles
       def articles(id, *args)
@@ -26,7 +25,6 @@ module Desk
       #   @example Return extended information for 12345
       #     Desk.article(12345)
       #     Desk.article(12345, :by => "external_id")
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/articles/show
       def article(id, *args)
@@ -43,7 +41,6 @@ module Desk
       #   @option options [Hash]
       #   @example Creates a new article
       #     Desk.create_article(1, :subject => "API Tips", :main_content => "Tips on using our API")
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/articles/create
       def create_article(topic_id, *args)
@@ -62,7 +59,6 @@ module Desk
       #   @option options [String]
       #   @example Updates information for article 12345
       #     Desk.update_article(12345, :subject => "New Subject")
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/articles/update
       def update_article(id, *args)
@@ -80,7 +76,6 @@ module Desk
       #   @param id [Integer] a article ID
       #   @example Deletes article 12345
       #     Desk.update_article(12345, :subject => "New Subject")
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/articles/update
       def delete_article(id)

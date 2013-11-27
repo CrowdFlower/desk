@@ -10,26 +10,22 @@ module Desk
 
     def connection(raw=false)
       options = {
-        :headers => {'Accept' => "application/#{format}", 'User-Agent' => user_agent},
+        :headers => {'Accept' => "application/json", 'User-Agent' => user_agent},
         :proxy => proxy,
         :ssl => {:verify => false},
         :url => api_endpoint,
       }
 
       Faraday.new(options) do |builder|
+        builder.use FaradayMiddleware::EncodeJson
         builder.use Faraday::Request::MultipartWithFile
         builder.use Faraday::Request::OAuth, authentication if authenticated?
         builder.use Faraday::Request::Multipart
         builder.use Faraday::Request::UrlEncoded
         builder.use Faraday::Response::RaiseHttp4xx
-        builder.use Faraday::Response::Rashify unless raw
         unless raw
-          case format.to_s.downcase
-          when 'json'
-            builder.use Faraday::Response::ParseJson
-          when 'xml'
-            builder.use Faraday::Response::ParseXml
-          end
+          builder.use Faraday::Response::Rashify
+          builder.use Faraday::Response::ParseJson
         end
         builder.use Faraday::Response::RaiseHttp5xx
         builder.adapter(adapter)

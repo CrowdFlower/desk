@@ -1,5 +1,3 @@
-require 'helper'
-
 describe Desk::Client do
   it "should connect using the endpoint configuration" do
     client = Desk::Client.new

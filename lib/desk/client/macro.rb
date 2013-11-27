@@ -9,7 +9,6 @@ module Desk
       #     Desk.macros
       #     Desk.macros(:count => 5)
       #     Desk.macros(:count => 5, :page => 3)
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/macros
       def macros(*args)
@@ -24,7 +23,6 @@ module Desk
       #   @option options [Hash]
       #   @example Return extended information for 12345
       #     Desk.macro(12345)
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/macros/show
       def macro(id)
@@ -39,7 +37,6 @@ module Desk
       #   @example Creates a new macro
       #     Desk.create_macro("name")
       #     Desk.create_macro("name")
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/macros/create
       def create_macro(name, *args)
@@ -58,7 +55,6 @@ module Desk
       #   @option options [String]
       #   @example Updates information for macro 12345
       #     Desk.update_macro(12345, :subject => "New Subject")
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/macros/update
       def update_macro(id, *args)
@@ -76,7 +72,6 @@ module Desk
       #   @param id [Integer] a macro ID
       #   @example Deletes macro 12345
       #     Desk.update_macro(12345, :subject => "New Subject")
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/macros/update
       def delete_macro(id)
@@ -95,7 +90,6 @@ module Desk
       #     Desk.macro_actions(1)
       #     Desk.macro_actions(1, :count => 5)
       #     Desk.macro_actions(1, :count => 5, :page => 3)
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/macros/actions
       def macro_actions(id, *args)
@@ -110,7 +104,6 @@ module Desk
       #   @option options [Hash]
       #   @example Return extended information for 12345
       #     Desk.macro_action(12345, "set-case-description")
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/macros/actions/show
       def macro_action(id, slug)
@@ -124,7 +117,6 @@ module Desk
       #   @option options [String]
       #   @example Updates information for macro 12345
       #     Desk.update_macro_action(12345, "set-case-description", :value => "New Subject")
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/macros/actions/update
       def update_macro_action(id, slug, *args)

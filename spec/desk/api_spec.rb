@@ -1,5 +1,3 @@
-require 'helper'
-
 describe Desk::API do
   before do
     @keys = Desk::Configuration::VALID_OPTIONS_KEYS
@@ -35,7 +33,6 @@ describe Desk::API do
           :oauth_token => 'OT',
           :oauth_token_secret => 'OS',
           :adapter => :typhoeus,
-          :format => :xml,
           :max_requests => 50,
           :proxy => 'http://erik:sekret@proxy.example.com:8080',
           :subdomain => 'zencoder',

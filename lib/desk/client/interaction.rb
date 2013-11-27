@@ -9,7 +9,6 @@ module Desk
       #   @example Return extended information for 12345
       #     Desk.interactions(:since_id => 12345)
       #     Desk.interactions(:since_id => 12345, :count => 5)
-      # @format :json
       # @authenticated true
       # @see http://dev.desk.com/docs/api/interactions
       def interactions(*args)
@@ -34,7 +33,6 @@ module Desk
 
       # Creates an interaction from a customer
       #
-      # @format :json
       # @authenticated true
       # @rate_limited true
       # @return [Array] The requested users.
